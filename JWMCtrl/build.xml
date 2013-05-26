@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<project name="JWMCtrl" default="all" basedir=".">
+	<property file="build.properties" />
+	<property environment="env"/>
+
+	<path id="base.classpath">
+		<fileset dir="${lib.dir}" includes="*.jar" />
+		<pathelement location="${java.dist.dir}" />
+	</path>
+
+	<target name="clean">
+		<delete failonerror="false">
+			<fileset dir="${dist.dir}"/>
+			<fileset dir="${doc.dir}"/>
+		</delete>
+		<delete failonerror="false" file="${project.name}-${project.version}.jar"/>
+		<delete failonerror="false" file="${project.name}-${project.version}-javadoc.jar"/>
+		<delete failonerror="false" file="${project.name}-${project.version}-all.jar"/>
+	</target>
+	
+	<target name="prepare">
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${java.dist.dir}" />
+		<mkdir dir="${java.dist.dir}/META-INF" />
+		<mkdir dir="${doc.dir}"/>
+	</target>
+
+	<target name="compile-java" depends="clean, prepare">
+		<javac 
+			srcdir="${src.dir}"
+			destdir="${java.dist.dir}"
+			classpathref = "base.classpath"
+			debug="${javac.debug}" 
+			target="${javac.target}"
+			deprecation="${javac.deprecation}" 
+			optimize="${javac.optimize}"
+			excludes="${javac.excludes}"
+			encoding="GBK" >		
+			<compilerarg value="-Xlint:unchecked"/>
+		</javac>
+	</target>
+	
+	<target name="generate-doc" depends="clean, prepare">
+		<javadoc destdir="${doc.dir}" encoding="UTF-8" docencoding="UTF-8">
+			<packageset dir="${src.dir}">
+				<include name="**"/>
+			</packageset>
+		</javadoc>
+	</target>
+
+	<target name="jar" depends="compile-java, generate-doc">
+		<jar jarfile="${project.name}-${project.version}.jar">
+			<fileset dir="${java.dist.dir}">
+				<include name="**/*" />
+			</fileset>
+			<manifest>
+				<attribute name="Manifest-Version" value="1.0"/>
+				<attribute name="Built-By" value="zhengbo.wang"/>
+				<attribute name="Email" value="zhengbowang1984@gmail.com"/>
+			</manifest>
+		</jar>
+		<copyfile dest="lib/${project.name}-${project.version}.jar" src="${project.name}-${project.version}.jar"/>
+		<jar jarfile="${project.name}-${project.version}-javadoc.jar">
+			<fileset dir="${doc.dir}">
+				<include name="**/*" />
+			</fileset>
+		</jar>
+		<jar jarfile="${project.name}-${project.version}-all.jar">
+			<fileset dir=".">
+				<include name="${src.dir}/**" />
+			</fileset>
+			<fileset dir=".">
+				<include name="${test.dir}/**" />
+			</fileset>
+			<fileset dir=".">
+				<include name="${lib.dir}/**" />
+			</fileset>
+			<fileset dir=".">
+				<include name=".classpath" />
+				<include name=".project" />
+				<include name="build.properties" />
+				<include name="build.sh" />
+				<include name="build.xml" />
+				<include name="ChangeLog.txt" />
+				<include name="jwmctrl" />
+				<include name="readme.txt" />
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="zip">
+		<zip destfile="${project.name}-${project.version}.zip">
+			<fileset dir=".">
+				<include name="${lib.dir}/commons-lang3-3.1.jar" />
+				<include name="${lib.dir}/java-getopt-1.0.14.jar" />
+				<include name="${lib.dir}/jna-3.5.2.jar" />
+				<include name="${lib.dir}/platform-3.5.2.jar" />
+				<include name="${lib.dir}/${project.name}-${project.version}.jar" />
+			</fileset>
+			<fileset dir=".">
+				<include name="ChangeLog.txt" />
+				<include name="jwmctrl" />
+				<include name="readme.txt" />
+			</fileset>
+		</zip>
+	</target>
+		
+	<target name="all" depends="jar, zip">
+		
+	</target>
+</project>
