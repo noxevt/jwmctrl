@@ -5,13 +5,13 @@ import gnu.getopt.Getopt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.sun.jna.Library;
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
+import com.sun.jna.Platform;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.unix.X11;
 import com.sun.jna.platform.unix.X11.Atom;
@@ -30,7 +30,7 @@ public class WMCtrl {
 	private static final X11Ext x11Ext = X11Ext.INSTANCE;
 
 	private static final String PROG_NAME = "jwmctrl";
-	private static final String VERSION = "1.0-alpha";
+	private static final String VERSION = "1.0-alpha2";
 	private static final String HELP = "jwmctrl "
 			+ VERSION
 			+ "\n"
@@ -189,7 +189,18 @@ public class WMCtrl {
 
 	private static final Options options = new Options();
 
+	private static final String MAC_DEFAULT_JNA_LIBRARY_PATH = "/opt/X11/lib";
+
 	public static void main(String[] args) {
+		// Set jna.library.path to '/opt/X11/lib' for Mac OS X if it's not
+		// specified
+		if (Platform.isMac()) {
+			if (StringUtils.isBlank(System.getProperty("jna.library.path"))) {
+				System.setProperty("jna.library.path",
+						MAC_DEFAULT_JNA_LIBRARY_PATH);
+			}
+		}
+
 		int opt = 0;
 		char action = 0;
 		boolean ret = true;
@@ -214,6 +225,7 @@ public class WMCtrl {
 
 		final Getopt getopt = new Getopt(PROG_NAME, args,
 				"FGVvhlupidmxa:r:s:c:t:w:k:o:n:g:e:b:N:I:T:R:");
+		GetOptUtils.fixI18nBug(getopt);
 
 		while ((opt = getopt.getopt()) != -1) {
 			missing_option = false;

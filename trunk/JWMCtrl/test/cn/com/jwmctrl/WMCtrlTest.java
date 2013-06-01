@@ -63,6 +63,38 @@ public class WMCtrlTest {
 		sw.getBuffer().delete(0, sw.getBuffer().length());
 	}
 
+	@Test
+	public void WMCtrl_errorMessage() {
+		Assert.assertEquals(execJWMCtrl("-s"), "j" + execWMCtrl("-s"));
+
+		Assert.assertEquals(execJWMCtrl("-s invalid"), "j"
+				+ execWMCtrl("-s invalid"));
+
+		Assert.assertEquals(execJWMCtrl("-a"), "j" + execWMCtrl("-a"));
+
+		Assert.assertEquals(execJWMCtrl("-c"), "j" + execWMCtrl("-c"));
+
+		Assert.assertEquals(execJWMCtrl("-r TestWindowTitle -e"), "j"
+				+ execWMCtrl("-r TestWindowTitle -e"));
+
+		Assert.assertEquals(execJWMCtrl("-r"), "j" + execWMCtrl("-r"));
+
+		Assert.assertEquals(execJWMCtrl("-r TestWindowTitle -N"), "j"
+				+ execWMCtrl("-r TestWindowTitle -N"));
+
+		Assert.assertEquals(execJWMCtrl("-r TestWindowTitle -I"), "j"
+				+ execWMCtrl("-r TestWindowTitle -I"));
+
+		Assert.assertEquals(execJWMCtrl("-r TestWindowTitle -T"), "j"
+				+ execWMCtrl("-r TestWindowTitle -T"));
+
+		Assert.assertEquals(execJWMCtrl("-k"), "j" + execWMCtrl("-k"));
+
+		Assert.assertEquals(execJWMCtrl("-o"), "j" + execWMCtrl("-o"));
+
+		Assert.assertEquals(execJWMCtrl("-n"), "j" + execWMCtrl("-n"));
+	}
+
 	@Ignore
 	@Test
 	public void WMCtrl() {
@@ -120,12 +152,7 @@ public class WMCtrlTest {
 		sleep(100);
 		Assert.assertEquals(currentDesktop, WMCtrl.get_current_desktop(disp));
 
-		Assert.assertEquals(
-				String.format("jwmctrl: option requires an argument -- s%n"),
-				execJWMCtrl("-s"));
 		testJWMCtrl("-s -1");
-		Assert.assertEquals(String.format("Invalid desktop ID.%n"),
-				execJWMCtrl("-s a"));
 	}
 
 	@Test
@@ -241,9 +268,6 @@ public class WMCtrlTest {
 		frame2.setVisible(false);
 		frame2.dispose();
 
-		Assert.assertEquals(
-				String.format("jwmctrl: option requires an argument -- a%n"),
-				execJWMCtrl("-a"));
 		testJWMCtrl("-a NotExistsWindow");
 	}
 
@@ -289,9 +313,6 @@ public class WMCtrlTest {
 				winTitle1.equals(WMCtrl.get_window_title(disp,
 						WMCtrl.get_active_window(disp))));
 
-		Assert.assertEquals(
-				String.format("jwmctrl: option requires an argument -- c%n"),
-				execJWMCtrl("-c"));
 		testJWMCtrl("-c NotExistsWindow");
 	}
 
@@ -403,12 +424,6 @@ public class WMCtrlTest {
 		testJWMCtrl("-r " + winTitle1 + " -e 0,10,10,400,a");
 		testJWMCtrl("-r " + winTitle1 + " -e x");
 		testJWMCtrl("-r " + winTitle1);
-		Assert.assertEquals(
-				String.format("jwmctrl: option requires an argument -- e%n"),
-				execJWMCtrl("-r " + winTitle1 + " -e"));
-		Assert.assertEquals(
-				String.format("jwmctrl: option requires an argument -- r%n"),
-				execJWMCtrl("-r"));
 
 		frame1.setVisible(false);
 		frame1.dispose();
@@ -440,12 +455,6 @@ public class WMCtrlTest {
 		testJWMCtrl("-r " + winTitle1 + " -b add, ");
 		testJWMCtrl("-r " + winTitle1 + " -b add,");
 		testJWMCtrl("-r " + winTitle1);
-		Assert.assertEquals(
-				String.format("jwmctrl: option requires an argument -- b%n"),
-				execJWMCtrl("-r " + winTitle1 + " -b"));
-		Assert.assertEquals(
-				String.format("jwmctrl: option requires an argument -- r%n"),
-				execJWMCtrl("-r"));
 
 		frame1.setVisible(false);
 		frame1.dispose();
@@ -473,13 +482,6 @@ public class WMCtrlTest {
 		Assert.assertEquals(winTitle1,
 				WMCtrl.get_window_title(disp, WMCtrl.get_active_window(disp)));
 
-		Assert.assertEquals(
-				String.format("jwmctrl: option requires an argument -- N%n"),
-				execJWMCtrl("-r " + winTitle1 + " -N "));
-		Assert.assertEquals(
-				String.format("jwmctrl: option requires an argument -- N%n"),
-				execJWMCtrl("-r " + winTitle1 + " -N"));
-
 		testJWMCtrl("-r NotExistsWindow -N NewNotExistsWindow");
 
 		frame1.setVisible(false);
@@ -503,13 +505,6 @@ public class WMCtrlTest {
 				WMCtrl.get_window_title(disp, WMCtrl.get_active_window(disp)));
 		// Assert.assertEquals(winIconName1,
 		// WMCtrl.get_window_icon_name(disp, WMCtrl.get_active_window(disp)));
-
-		Assert.assertEquals(
-				String.format("jwmctrl: option requires an argument -- I%n"),
-				execJWMCtrl("-r " + winTitle1 + " -I "));
-		Assert.assertEquals(
-				String.format("jwmctrl: option requires an argument -- I%n"),
-				execJWMCtrl("-r " + winTitle1 + " -I"));
 
 		testJWMCtrl("-r NotExistsWindow -I TestIconName");
 
@@ -538,13 +533,6 @@ public class WMCtrlTest {
 		sleep(1000);
 		Assert.assertEquals(winTitle1,
 				WMCtrl.get_window_title(disp, WMCtrl.get_active_window(disp)));
-
-		Assert.assertEquals(
-				String.format("jwmctrl: option requires an argument -- T%n"),
-				execJWMCtrl("-r " + winTitle1 + " -T "));
-		Assert.assertEquals(
-				String.format("jwmctrl: option requires an argument -- T%n"),
-				execJWMCtrl("-r " + winTitle1 + " -T"));
 
 		testJWMCtrl("-r NotExistsWindow -T NewNotExistsWindow");
 
@@ -576,9 +564,6 @@ public class WMCtrlTest {
 		Assert.assertEquals(jwmctrlOut2, wmctrlOut2);
 
 		testJWMCtrl("-k invalid");
-		Assert.assertEquals(
-				String.format("jwmctrl: option requires an argument -- k%n"),
-				execJWMCtrl("-k"));
 	}
 
 	@Test
@@ -593,10 +578,6 @@ public class WMCtrlTest {
 		testJWMCtrl("-o 300,");
 		testJWMCtrl("-o 300");
 		testJWMCtrl("-o a");
-
-		Assert.assertEquals(
-				String.format("jwmctrl: option requires an argument -- o%n"),
-				execJWMCtrl("-o"));
 	}
 
 	@Test
@@ -640,10 +621,6 @@ public class WMCtrlTest {
 		sleep(200);
 		Assert.assertEquals(numberOfDesktop,
 				WMCtrl.get_number_of_desktops(disp));
-
-		Assert.assertEquals(
-				String.format("jwmctrl: option requires an argument -- n%n"),
-				execJWMCtrl("-n"));
 	}
 
 	@Test
