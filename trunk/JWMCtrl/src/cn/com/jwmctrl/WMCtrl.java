@@ -5,6 +5,7 @@ import gnu.getopt.Getopt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.sun.jna.Library;
@@ -26,8 +27,8 @@ import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
 
 public class WMCtrl {
-	private static final X11 x11 = X11.INSTANCE;
-	private static final X11Ext x11Ext = X11Ext.INSTANCE;
+	private static final X11 x11;
+	private static final X11Ext x11Ext;
 
 	private static final String PROG_NAME = "jwmctrl";
 	private static final String VERSION = "1.0-alpha2";
@@ -191,7 +192,7 @@ public class WMCtrl {
 
 	private static final String MAC_DEFAULT_JNA_LIBRARY_PATH = "/opt/X11/lib";
 
-	public static void main(String[] args) {
+	static {
 		// Set jna.library.path to '/opt/X11/lib' for Mac OS X if it's not
 		// specified
 		if (Platform.isMac()) {
@@ -200,7 +201,11 @@ public class WMCtrl {
 						MAC_DEFAULT_JNA_LIBRARY_PATH);
 			}
 		}
+		x11 = X11.INSTANCE;
+		x11Ext = X11Ext.INSTANCE;
+	}
 
+	public static void main(String[] args) {
 		int opt = 0;
 		char action = 0;
 		boolean ret = true;
