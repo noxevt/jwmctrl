@@ -31,7 +31,7 @@ public class WMCtrl {
 	private static final X11Ext x11Ext;
 
 	private static final String PROG_NAME = "jwmctrl";
-	private static final String VERSION = "1.0-alpha3";
+	private static final String VERSION = "1.0-alpha4";
 	private static final String HELP = "jwmctrl "
 			+ VERSION
 			+ "\n"
@@ -193,13 +193,16 @@ public class WMCtrl {
 	private static final String MAC_DEFAULT_JNA_LIBRARY_PATH = "/opt/X11/lib";
 
 	static {
-		// Set jna.library.path to '/opt/X11/lib' for Mac OS X if it's not
-		// specified
 		if (Platform.isMac()) {
+			// Set jna.library.path to '/opt/X11/lib' for Mac OS X if it's not
+			// specified
 			if (StringUtils.isBlank(System.getProperty("jna.library.path"))) {
 				System.setProperty("jna.library.path",
 						MAC_DEFAULT_JNA_LIBRARY_PATH);
 			}
+
+			// Set file.encoding to UTF-8 for Mac OS X
+			System.setProperty("file.encoding", "UTF-8");
 		}
 		x11 = X11.INSTANCE;
 		x11Ext = X11Ext.INSTANCE;
