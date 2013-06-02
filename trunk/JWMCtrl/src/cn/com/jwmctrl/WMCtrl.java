@@ -584,8 +584,9 @@ public class WMCtrl {
 		}
 
 		final List<Window> client_list = new ArrayList<Window>();
-		final int WINDOW_SIZE = 4;
-		for (int i = 0, count = (int) size.getValue().longValue() / WINDOW_SIZE; i < count; i++) {
+		final int SIZE_OF_WINDOW = 4;
+		for (int i = 0, count = (int) size.getValue().longValue()
+				/ SIZE_OF_WINDOW; i < count; i++) {
 			client_list.add(new Window(Pointer.nativeValue(clientList
 					.getPointer(i * Window.SIZE))));
 
@@ -1063,7 +1064,8 @@ public class WMCtrl {
 		desktop_geometry_str = new String[num_desktops];
 		if ((desktop_geometry != null)
 				&& (desktop_geometry_size.getValue().longValue() > 0)) {
-			if (desktop_geometry_size.getValue().longValue() == 2 * Pointer.SIZE) {
+			final int SIZE_OF_DESKTOP_GEOMETRY = 4;
+			if (desktop_geometry_size.getValue().longValue() == 2 * SIZE_OF_DESKTOP_GEOMETRY) {
 				/* only one value - use it for all desktops */
 				p_verbose("WM provides _NET_DESKTOP_GEOMETRY value common for all desktops.\n");
 				for (int i = 0; i < num_desktops; i++) {
@@ -1100,7 +1102,8 @@ public class WMCtrl {
 		desktop_viewport_str = new String[num_desktops];
 		if ((desktop_viewport != null)
 				&& (desktop_viewport_size.getValue().longValue() > 0)) {
-			if (desktop_viewport_size.getValue().longValue() == 2 * NativeLong.SIZE) {
+			final int SIZE_OF_DESKTOP_VIEWPORT = 4;
+			if (desktop_viewport_size.getValue().longValue() == 2 * SIZE_OF_DESKTOP_VIEWPORT) {
 				/* only one value - use it for current desktop */
 				p_verbose("WM provides _NET_DESKTOP_VIEWPORT value only for the current desktop.\n");
 				for (int i = 0; i < num_desktops; i++) {
@@ -1139,7 +1142,8 @@ public class WMCtrl {
 		desktop_workarea_str = new String[num_desktops];
 		if ((desktop_workarea != null)
 				&& (desktop_workarea_size.getValue().longValue() > 0)) {
-			if (desktop_workarea_size.getValue().longValue() == 4 * NativeLong.SIZE) {
+			final int SIZE_OF_DESKTOP_WORKAREA = 4;
+			if (desktop_workarea_size.getValue().longValue() == 4 * SIZE_OF_DESKTOP_WORKAREA) {
 				/* only one value - use it for current desktop */
 				p_verbose("WM provides _NET_WORKAREA value only for the current desktop.\n");
 				for (int i = 0; i < num_desktops; i++) {
