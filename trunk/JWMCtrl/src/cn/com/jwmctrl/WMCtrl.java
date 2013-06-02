@@ -28,10 +28,10 @@ import com.sun.jna.ptr.PointerByReference;
 
 public class WMCtrl {
 	private static final X11 x11;
-	private static final X11Ext x11Ext;
+	private static X11Ext x11Ext = null;
 
 	private static final String PROG_NAME = "jwmctrl";
-	private static final String VERSION = "1.0-alpha4";
+	private static final String VERSION = "1.0-beta";
 	private static final String HELP = "jwmctrl "
 			+ VERSION
 			+ "\n"
@@ -202,7 +202,6 @@ public class WMCtrl {
 			}
 		}
 		x11 = X11.INSTANCE;
-		x11Ext = X11Ext.INSTANCE;
 	}
 
 	public static void main(String[] args) {
@@ -845,11 +844,11 @@ public class WMCtrl {
 		} else {
 			p_verbose("WM doesn't support _NET_MOVERESIZE_WINDOW. Gravity will be ignored.\n");
 			if ((w < 1 || h < 1) && (x >= 0 && y >= 0)) {
-				x11Ext.XMoveWindow(disp, win, x, y);
+				getX11Ext().XMoveWindow(disp, win, x, y);
 			} else if ((x < 0 || y < 0) && (w >= 1 && h >= -1)) {
-				x11Ext.XResizeWindow(disp, win, w, h);
+				getX11Ext().XResizeWindow(disp, win, w, h);
 			} else if (x >= 0 && y >= 0 && w >= 1 && h >= 1) {
-				x11Ext.XMoveResizeWindow(disp, win, x, y, w, h);
+				getX11Ext().XMoveResizeWindow(disp, win, x, y, w, h);
 			}
 			return EXIT_SUCCESS;
 		}
@@ -1311,7 +1310,7 @@ public class WMCtrl {
 			final Window win) {
 		final PointerByReference icon_name_return = new PointerByReference();
 
-		if (x11Ext.XGetIconName(disp, win, icon_name_return) == 0) {
+		if (getX11Ext().XGetIconName(disp, win, icon_name_return) == 0) {
 			g_free(icon_name_return.getPointer());
 			return null;
 		}
@@ -1537,11 +1536,11 @@ public class WMCtrl {
 		final IntByReference dummy = new IntByReference();
 
 		/* Make the target cursor */
-		final X11.Cursor cursor = x11Ext.XCreateFontCursor(disp,
+		final X11.Cursor cursor = getX11Ext().XCreateFontCursor(disp,
 				X11Ext.XC_crosshair);
 
 		/* Grab the pointer using target cursor, letting it room all over */
-		final int status = x11Ext.XGrabPointer(disp, root, false,
+		final int status = getX11Ext().XGrabPointer(disp, root, false,
 				X11.ButtonPressMask | X11.ButtonReleaseMask, X11.GrabModeSync,
 				X11.GrabModeAsync, root, cursor, X11.CurrentTime);
 		if (status != X11.GrabSuccess) {
@@ -1552,7 +1551,7 @@ public class WMCtrl {
 		/* Let the user select a window... */
 		while ((target_win == null) || (buttons != 0)) {
 			/* allow one more event */
-			x11Ext.XAllowEvents(disp, X11.SyncPointer, X11.CurrentTime);
+			getX11Ext().XAllowEvents(disp, X11.SyncPointer, X11.CurrentTime);
 			x11.XWindowEvent(disp, root, new NativeLong(X11.ButtonPressMask
 					| X11.ButtonReleaseMask), event);
 			switch (event.type) {
@@ -1574,12 +1573,12 @@ public class WMCtrl {
 			}
 		}
 
-		x11Ext.XUngrabPointer(disp, X11.CurrentTime); /* Done with pointer */
+		getX11Ext().XUngrabPointer(disp, X11.CurrentTime); /* Done with pointer */
 
 		if ((x11.XGetGeometry(disp, target_win, new WindowByReference(),
 				dummyi, dummyi, dummy, dummy, dummy, dummy) != FALSE)
 				&& (target_win != root)) {
-			target_win = x11Ext.XmuClientWindow(disp, target_win);
+			target_win = getX11Ext().XmuClientWindow(disp, target_win);
 		}
 
 		return target_win;
@@ -1672,6 +1671,14 @@ public class WMCtrl {
 		return list;
 	}
 
+	private static X11Ext getX11Ext() {
+		if (x11Ext == null) {
+			x11Ext = (X11Ext) Native.loadLibrary("X11", X11Ext.class);
+			;
+		}
+		return x11Ext;
+	}
+
 	public static enum WindowSetTitleMode {
 		NAME('N'),
 
@@ -1697,8 +1704,6 @@ public class WMCtrl {
 
 	private static interface X11Ext extends Library {
 		int XC_crosshair = 34;
-
-		X11Ext INSTANCE = (X11Ext) Native.loadLibrary("X11", X11Ext.class);
 
 		void XMoveWindow(final Display disp, final Window win, final long x,
 				final long y);

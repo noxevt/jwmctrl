@@ -23,6 +23,7 @@ import org.junit.Test;
 import cn.com.jwmctrl.WMCtrl.Options;
 import cn.com.jwmctrl.WMCtrl.WindowSetTitleMode;
 
+import com.sun.jna.Platform;
 import com.sun.jna.platform.unix.X11;
 import com.sun.jna.platform.unix.X11.Display;
 import com.sun.jna.platform.unix.X11.Window;
@@ -42,6 +43,14 @@ public class WMCtrlTest {
 
 		final File jwmctrl = new File("jwmctrl");
 		jwmctrl.setExecutable(true);
+
+		if (Platform.isMac()) {
+			// Set jna.library.path to '/opt/X11/lib' for Mac OS X
+			if (StringUtils.isBlank(System.getProperty("jna.library.path"))) {
+				System.setProperty("jna.library.path",
+						"MAC_DEFAULT_JNA_LIBRARY_PATH");
+			}
+		}
 	}
 
 	@Before
