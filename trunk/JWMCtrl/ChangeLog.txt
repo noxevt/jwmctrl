@@ -1,5 +1,6 @@
 02/06/2013 - 1.0.0-alpha3
   1. Fix window list bug under Linux x64 and Mac OS X.
+  2. Fix desktop list bug under Linux x64 and Mac OS X.
 
 01/06/2013 - 1.0.0-alpha2
   1. Fix java-getopt lib's i18n bug.
