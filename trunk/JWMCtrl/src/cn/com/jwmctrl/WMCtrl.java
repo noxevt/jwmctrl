@@ -1081,7 +1081,7 @@ public class WMCtrl {
 				p_verbose("WM provides separate _NET_DESKTOP_GEOMETRY value for each desktop.\n");
 				for (int i = 0; i < num_desktops; i++) {
 					if (i < desktop_geometry_size.getValue().longValue()
-							/ Pointer.SIZE / 2) {
+							/ SIZE_OF_DESKTOP_GEOMETRY / 2) {
 						desktop_geometry_str[i] = String.format(
 								"%dx%d",
 								desktop_geometry.getPointer(i * 2).getLong(0),
@@ -1121,7 +1121,7 @@ public class WMCtrl {
 				/* seperate values for each of desktops */
 				for (int i = 0; i < num_desktops; i++) {
 					if (i < desktop_viewport_size.getValue().longValue()
-							/ NativeLong.SIZE / 2) {
+							/ SIZE_OF_DESKTOP_VIEWPORT / 2) {
 						desktop_viewport_str[i] = String.format(
 								"%d,%d",
 								desktop_viewport.getPointer(i * 2).getLong(0),
@@ -1165,7 +1165,7 @@ public class WMCtrl {
 				/* seperate values for each of desktops */
 				for (int i = 0; i < num_desktops; i++) {
 					if (i < desktop_workarea_size.getValue().longValue()
-							/ NativeLong.SIZE / 4) {
+							/ SIZE_OF_DESKTOP_WORKAREA / 4) {
 						desktop_workarea_str[i] = String.format("%d,%d %dx%d",
 								Pointer.nativeValue(desktop_workarea
 										.getPointer(i * NativeLong.SIZE * 4)),
