@@ -31,7 +31,7 @@ public class WMCtrl {
 	private static final X11Ext x11Ext;
 
 	private static final String PROG_NAME = "jwmctrl";
-	private static final String VERSION = "1.0-alpha2";
+	private static final String VERSION = "1.0-alpha3";
 	private static final String HELP = "jwmctrl "
 			+ VERSION
 			+ "\n"
@@ -584,7 +584,8 @@ public class WMCtrl {
 		}
 
 		final List<Window> client_list = new ArrayList<Window>();
-		for (int i = 0, count = (int) size.getValue().longValue() / Window.SIZE; i < count; i++) {
+		final int WINDOW_SIZE = 4;
+		for (int i = 0, count = (int) size.getValue().longValue() / WINDOW_SIZE; i < count; i++) {
 			client_list.add(new Window(Pointer.nativeValue(clientList
 					.getPointer(i * Window.SIZE))));
 
@@ -1662,6 +1663,7 @@ public class WMCtrl {
 		while (scanner.hasNextLong()) {
 			list.add(scanner.nextLong());
 		}
+		scanner.close();
 
 		return list;
 	}
