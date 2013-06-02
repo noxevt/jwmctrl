@@ -200,9 +200,6 @@ public class WMCtrl {
 				System.setProperty("jna.library.path",
 						MAC_DEFAULT_JNA_LIBRARY_PATH);
 			}
-
-			// Set file.encoding to UTF-8 for Mac OS X
-			System.setProperty("file.encoding", "UTF-8");
 		}
 		x11 = X11.INSTANCE;
 		x11Ext = X11Ext.INSTANCE;
