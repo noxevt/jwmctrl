@@ -47,8 +47,7 @@ public class WMCtrlTest {
 		if (Platform.isMac()) {
 			// Set jna.library.path to '/opt/X11/lib' for Mac OS X
 			if (StringUtils.isBlank(System.getProperty("jna.library.path"))) {
-				System.setProperty("jna.library.path",
-						"MAC_DEFAULT_JNA_LIBRARY_PATH");
+				System.setProperty("jna.library.path", "/opt/X11/lib");
 			}
 		}
 	}
