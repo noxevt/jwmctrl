@@ -29,9 +29,10 @@ import com.sun.jna.ptr.PointerByReference;
 public class WMCtrl {
 	private static final X11 x11;
 	private static X11Ext x11Ext = null;
+	private static Xmu xmu = null;
 
 	private static final String PROG_NAME = "jwmctrl";
-	private static final String VERSION = "1.0-beta";
+	private static final String VERSION = "1.0-beta2";
 	private static final String HELP = "jwmctrl "
 			+ VERSION
 			+ "\n"
@@ -1558,7 +1559,7 @@ public class WMCtrl {
 			case X11.ButtonPress:
 				if (target_win == null) {
 					target_win = event.xbutton.subwindow; /* window selected */
-					if (target_win == null) {
+					if ((target_win == null) || (target_win.longValue() == 0)) {
 						target_win = root;
 					}
 				}
@@ -1575,10 +1576,11 @@ public class WMCtrl {
 
 		getX11Ext().XUngrabPointer(disp, X11.CurrentTime); /* Done with pointer */
 
-		if ((x11.XGetGeometry(disp, target_win, new WindowByReference(),
-				dummyi, dummyi, dummy, dummy, dummy, dummy) != FALSE)
-				&& (target_win != root)) {
-			target_win = getX11Ext().XmuClientWindow(disp, target_win);
+		final WindowByReference windowRef = new WindowByReference();
+		if ((x11.XGetGeometry(disp, target_win, windowRef, dummyi, dummyi,
+				dummy, dummy, dummy, dummy) != FALSE)
+				&& !target_win.equals(windowRef.getValue())) {
+			target_win = getXmu().XmuClientWindow(disp, target_win);
 		}
 
 		return target_win;
@@ -1674,9 +1676,15 @@ public class WMCtrl {
 	private static X11Ext getX11Ext() {
 		if (x11Ext == null) {
 			x11Ext = (X11Ext) Native.loadLibrary("X11", X11Ext.class);
-			;
 		}
 		return x11Ext;
+	}
+
+	private static Xmu getXmu() {
+		if (xmu == null) {
+			xmu = (Xmu) Native.loadLibrary("Xmu", Xmu.class);
+		}
+		return xmu;
 	}
 
 	public static enum WindowSetTitleMode {
@@ -1730,6 +1738,10 @@ public class WMCtrl {
 
 		int XGetIconName(final Display disp, final Window win,
 				final PointerByReference icon_name_return);
+	}
+
+	private static interface Xmu extends Library {
+		Window XmuClientWindow(final Display disp, final Window win);
 	}
 
 	public static class Options {
