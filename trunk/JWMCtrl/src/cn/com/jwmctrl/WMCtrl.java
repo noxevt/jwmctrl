@@ -20,6 +20,7 @@ import com.sun.jna.platform.unix.X11.AtomByReference;
 import com.sun.jna.platform.unix.X11.Display;
 import com.sun.jna.platform.unix.X11.Window;
 import com.sun.jna.platform.unix.X11.WindowByReference;
+import com.sun.jna.platform.unix.X11.XButtonEvent;
 import com.sun.jna.platform.unix.X11.XClientMessageEvent;
 import com.sun.jna.platform.unix.X11.XEvent;
 import com.sun.jna.ptr.IntByReference;
@@ -1529,7 +1530,6 @@ public class WMCtrl {
 		 * xfree86.
 		 */
 
-		final XEvent event = new XEvent();
 		Window target_win = null;
 		final Window root = x11.XDefaultRootWindow(disp);
 		int buttons = 0;
@@ -1541,9 +1541,10 @@ public class WMCtrl {
 				X11Ext.XC_crosshair);
 
 		/* Grab the pointer using target cursor, letting it room all over */
-		final int status = getX11Ext().XGrabPointer(disp, root, false,
-				X11.ButtonPressMask | X11.ButtonReleaseMask, X11.GrabModeSync,
-				X11.GrabModeAsync, root, cursor, X11.CurrentTime);
+		final int status = getX11Ext().XGrabPointer(disp, root, FALSE,
+				new NativeLong(X11.ButtonPressMask | X11.ButtonReleaseMask),
+				X11.GrabModeSync, X11.GrabModeAsync, root, cursor,
+				X11.CurrentTime);
 		if (status != X11.GrabSuccess) {
 			p_error("ERROR: Cannot grab mouse.\n");
 			return null;
@@ -1552,6 +1553,8 @@ public class WMCtrl {
 		/* Let the user select a window... */
 		while ((target_win == null) || (buttons != 0)) {
 			/* allow one more event */
+			final XEvent event = new XEvent();
+			event.setTypedValue(new XButtonEvent());
 			getX11Ext().XAllowEvents(disp, X11.SyncPointer, X11.CurrentTime);
 			x11.XWindowEvent(disp, root, new NativeLong(X11.ButtonPressMask
 					| X11.ButtonReleaseMask), event);
@@ -1725,7 +1728,7 @@ public class WMCtrl {
 		X11.Cursor XCreateFontCursor(final Display disp, final long shape);
 
 		int XGrabPointer(final Display disp, final Window grab_window,
-				final boolean owner_events, final long event_mask,
+				final int owner_events, final NativeLong event_mask,
 				final int pointer_mode, final int keyboard_mode,
 				final Window confine_to, final X11.Cursor cursor, final int time);
 
