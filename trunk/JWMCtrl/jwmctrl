@@ -1,1 +1,1 @@
-java -Dfile.encoding=UTF-8 -cp ./lib/JWMCtrl-1.0.0-beta2.jar:./lib/commons-lang3-3.1.jar:./lib/java-getopt-1.0.14.jar:./lib/jna-3.5.2.jar:./lib/platform-3.5.2.jar cn.com.jwmctrl.WMCtrl $*
+java -Dfile.encoding=UTF-8 -cp ./lib/JWMCtrl-1.0.0-beta3.jar:./lib/commons-lang3-3.1.jar:./lib/java-getopt-1.0.14.jar:./lib/jna-4.0.0.jar:./lib/jna-platform-4.0.0.jar cn.com.jwmctrl.WMCtrl $*

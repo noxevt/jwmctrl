@@ -1,3 +1,6 @@
+06/07/2013 - 1.0.0-beta3
+  1. Upgrade jna-3.5.2.jar and platform-3.5.2.jar to version 4.0.0.
+
 21/06/2013 - 1.0.0-beta2
   1. Fixed window select bug.
 
